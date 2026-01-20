@@ -7,21 +7,22 @@ struct ContentView: View {
     @State private var documentCounter = 1
 
     var body: some View {
-        BonsplitView(controller: controller) { tab in
+        BonsplitView(controller: controller) { tab, paneId in
             if let document = documents[tab.id] {
                 DocumentEditor(document: document, controller: controller, tabId: tab.id)
+                    .onTapGesture { controller.focusPane(paneId) }
             } else {
-                emptyPaneView
+                emptyPaneView(paneId: paneId)
             }
-        } emptyPaneView: {
-            emptyPaneView
+        } emptyPane: { paneId in
+            emptyPaneView(paneId: paneId)
         }
         .onAppear {
             createInitialTabs()
         }
     }
 
-    private var emptyPaneView: some View {
+    private func emptyPaneView(paneId: PaneID) -> some View {
         VStack(spacing: 12) {
             Image(systemName: "doc.text")
                 .font(.system(size: 48))
